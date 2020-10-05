@@ -1,7 +1,8 @@
 #Import extensions
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, EqualTo
+from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
+from models import User
 
 #Define the form
 class RegistrationForm(FlaskForm):
@@ -17,3 +18,10 @@ class RegistrationForm(FlaskForm):
                             EqualTo("password", message="Password must match")])
 
     submit_button = SubmitField('Create')
+
+    #Create a function to customise validation
+    def validate_username(self, username):
+        #Query database to see if user already exist
+        user_object = User.query.filter_by(username=username.data).first()
+        if user_object:
+            raise ValidationError("Username already exits. Select a different username.")
