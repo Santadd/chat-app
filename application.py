@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 #Import the contents of model.py
 from models import *
 from wtforms_fields import *
@@ -21,15 +21,31 @@ def index():
         #Obtain the username and password the user enters
         username = reg_form.username.data
         password = reg_form.password.data
-        
+
+        #Updated Database if validation is successful  
         #If user object has not been taken
         #Add user to the DB
         #Create a user object to add the username to the database
         user = User(username=username, password=password)
         db.session.add(user)
         db.session.commit()
-        return "Inserted into DB!"
+
+        #If Registration is successful, return user to the login page
+        return redirect(url_for("login"))
     return render_template("index.html", form=reg_form)
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    login_form = LoginForm()
+
+    #Allow user to login if there are no validation errors
+    if login_form.validate_on_submit():
+        return "Logged in successfully"
+
+    #If user uses the GET method to access the login
+    return render_template("login.html", form=login_form)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
