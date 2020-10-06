@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for
 from passlib.hash import pbkdf2_sha256
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 #Import the contents of model.py
 from models import *
 from wtforms_fields import *
@@ -14,6 +15,19 @@ app.secret_key = 'replace later'
 app.config['SQLALCHEMY_DATABASE_URI']= 'postgres://ffozzwshelgnck:f9e6a811c7287008929cecde47b04b206a4abf71f4b093418648fa5ac5cfef68@ec2-52-204-20-42.compute-1.amazonaws.com:5432/deellvnshen1t3'
 #Initialise the connection to our database
 db = SQLAlchemy(app)
+
+#Configure Flask Login
+login = LoginManager(app)
+login.init_app(app)
+
+#Load specific users
+@login.user_loader
+def load_user(id):
+    #Get a user object from the Database
+    return User.query.get(int(id))
+    #Login User
+
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     #Instantiate the Registration form
@@ -42,11 +56,25 @@ def login():
 
     #Allow user to login if there are no validation errors
     if login_form.validate_on_submit():
-        return "Logged in successfully"
-
+        user_object = User.query.filter_by(username=login_form.username.data).first()
+        login_user(user_object)       
+        return redirect(url_for('chat'))
+        
     #If user uses the GET method to access the login
     return render_template("login.html", form=login_form)
 
+#Accessible by logging in only
+@app.route("/chat", methods=['GET', 'POST'])
+@login_required
+def chat():
+
+    return "Chat with me"
+
+#Route to logout User
+@app.route("/logout", methods=["GET"])
+def logout():
+    logout_user()
+    return "Logged out using flask-login"
 
 
 if __name__ == "__main__":

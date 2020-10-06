@@ -1,10 +1,11 @@
 #import the SQLAlchemy class
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
 #Define a class for the Database
-class User(db.Model):
+class User(UserMixin, db.Model):
     """User model"""
     #Explicitly define the tablename
     __tablename__ = "users"
