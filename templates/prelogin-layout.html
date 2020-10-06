@@ -6,6 +6,15 @@
     <title>{% block title %}{% endblock %} - RChat</title>
 </head>
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!--make sure the variable string is not empty-->
+        {% if messages %}
+            <!--the "messages variable returns a list and each element of a list will be a tuple-->
+            <!--Access the error messages-->
+            Category: {{ messages[0][0] }}
+            {{ messages[0][1] }}
+        {% endif %}
+    {% endwith %}
     {% block content %}
 
     {% endblock %}

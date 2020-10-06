@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, flash
 from passlib.hash import pbkdf2_sha256
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 #Import the contents of model.py
@@ -38,14 +38,15 @@ def index():
         password = reg_form.password.data
         #Hash password
         hashed_pswd = pbkdf2_sha256.hash(password)
-        #Updated Database if validation is successful  
+        #Update Database if validation is successful  
         #If user object has not been taken
         #Add user to the DB
         #Create a user object to add the username to the database
         user = User(username=username, password=hashed_pswd)
         db.session.add(user)
         db.session.commit()
-
+        #Display flash message for succesful login
+        flash("Registered successfully. Please Login", 'success')
         #If Registration is successful, return user to the login page
         return redirect(url_for("login"))
     return render_template("index.html", form=reg_form)
@@ -74,7 +75,8 @@ def chat():
 @app.route("/logout", methods=["GET"])
 def logout():
     logout_user()
-    return "Logged out using flask-login"
+    flash("You have successfully logout", 'success')
+    return redirect(url_for('login'))
 
 
 if __name__ == "__main__":
