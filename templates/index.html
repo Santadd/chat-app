@@ -11,10 +11,14 @@
         {{ displayField(form.password, 'Passsword') }}
         {{ displayField(form.confirm_pswd, 'Confirm Passsword') }}
         
-        <div>
-            {{ form.submit_button }}
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-warning">
         </div>
 
         {{ form.csrf_token }}
     </form>
+
+    <hr>
+
+    <p>Already registered? <a href="{{ url_for('login') }}">Login Here</a>.</p>
 {% endblock %}

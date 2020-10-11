@@ -13,10 +13,13 @@
 
         {{ displayField(form.password, 'Passsword') }}
         
-        <div>
-            {{ form.submit_button }}
+        <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-warning">
         </div>
-
         {{ form.csrf_token }}
     </form>
+
+    <hr>
+
+    <p>Have you not registered? <a href="{{ url_for('index') }}">Register Here</a>.</p>
 {% endblock %}
